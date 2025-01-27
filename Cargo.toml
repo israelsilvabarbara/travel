@@ -1,0 +1,9 @@
+[package]
+name = "travel"
+version = "0.1.0"
+authors = ["Israel Barbara <israelsilvabarbara@gmail.com>"]
+edition = "2021"
+
+[dependencies]
+
+
