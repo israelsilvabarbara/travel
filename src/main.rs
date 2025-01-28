@@ -1,11 +1,8 @@
-use args::Cli;
-use clap::Parser;
-
-pub mod args;
-
+mod args;
+mod dispatcher;
+mod commands;
+mod manager;
 
 fn main() {
-    let args = Cli::parse();
-
-    println!("{:?}", args);
+    manager::init();
 }

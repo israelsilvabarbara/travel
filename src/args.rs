@@ -85,5 +85,5 @@ pub struct ClearArgs {
 
 #[derive(Args,Debug)]
 pub struct ToArgs{
-    pinpoint: String,
+    pub pinpoint: String,
 }
