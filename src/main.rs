@@ -1,3 +1,11 @@
+use args::Cli;
+use clap::Parser;
+
+pub mod args;
+
+
 fn main() {
-    println!("Hello, world from Travel!");
+    let args = Cli::parse();
+
+    println!("{:?}", args);
 }
