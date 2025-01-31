@@ -4,18 +4,19 @@ use crate::commands::{ add_command,
                        find_command, 
                        list_command, 
                        to_command    };
+use crate::storage::storage_map::StorageMap;
 
 use super::request::Request;
 
 
 
-pub fn route_request(request: Request) {
+pub fn route_request(request: Request, storage: &mut StorageMap) {
     match request {
-        Request::Add { id, path }             => add_command::execute(id, path),
-        Request::Clear { force }              => clear_command::execute(force),
-        Request::Delete { id }                => delete_command::execute(id),
-        Request::Find { pinpoint, key, auto } => find_command::execute(pinpoint, key, auto),
-        Request::List                         => list_command::execute(),
-        Request::To { path }                  => to_command::execute(path),
+        Request::Add { id, path }             => add_command::execute(storage, id, path),
+        Request::Clear { force }              => clear_command::execute(storage, force),
+        Request::Delete { id }                => delete_command::execute(storage, id),
+        Request::Find { pinpoint, key, auto } => find_command::execute(storage, pinpoint, key, auto),
+        Request::List                         => list_command::execute(storage),
+        Request::To { path }                  => to_command::execute(storage, path),
     }
 }
