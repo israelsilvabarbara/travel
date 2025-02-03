@@ -1,7 +1,6 @@
 use crate::storage::storage_map::StorageMap;
 use crate::utils::terminal::open_terminal;
 use crate::utils::fuzzy_matcher;
-use std::env;
 
 pub fn execute(storage: &StorageMap, path: String) {
     
