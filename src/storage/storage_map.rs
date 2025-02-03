@@ -12,18 +12,33 @@ pub struct StorageMap {
 
 impl StorageMap {
     pub fn new() -> Self {
-        let map = match read_from_file() {
-            Ok(content) => serde_json::from_str(&content).unwrap_or_else(|_| HashMap::new()),
-            Err(_) => HashMap::new(),
-        };
+        let content = read_from_file();
 
-        StorageMap { map }
+        if content.is_err() {
+            panic!("Error reading data: {}", content.err().unwrap());
+        }
+        
+        let map = serde_json::from_str(&content.unwrap());
+
+        if map.is_err() {
+            panic!("Error deserializing data: {}", map.err().unwrap());
+        }
+
+        StorageMap {
+            map: map.unwrap(),
+        }
     }
 
+    pub fn is_empty(&self) -> bool{
+        self.map.is_empty()
+    }
 
     pub fn insert(&mut self, key: String, value: PathBuf) {
         self.map.insert(key, value);
-        self.save();
+        match self.save(){
+            Ok(_) => {},
+            Err(e) => println!("Error saving data: {}", e),
+        }
     }
 
     pub fn get(&self, key: &str) -> Option<&PathBuf> {
@@ -41,12 +56,35 @@ impl StorageMap {
 
     pub fn clear(&mut self){
         self.map.clear();
-        self.save();
+        match self.save(){
+            Ok(_) => {},
+            Err(e) => println!("Error saving data: {}", e),
+        }
     }
 
     fn save(&self) -> io::Result<()> {
         let data = serde_json::to_string(&self.map)?;
-        write_to_file(&data)
+
+        println!("Debbuging data in save/storage_map.rs");
+        println!("Storage data before saving: {}", data);
+        
+        if let Err(e) = write_to_file(&data) {
+            println!("Error saving data: {}", e);
+            return Err(e);
+        }
+
+        Ok(())
+    }
+
+    #[allow(dead_code)]
+    fn load(&mut self) {
+        let data = match read_from_file() {
+            Ok(content) => content,
+            Err(e) => {
+                 println!("Error loading data: {}", e); 
+                 String::new() 
+            }
+        };
     }
 
     pub fn iter(&self) -> StorageMapIter {
