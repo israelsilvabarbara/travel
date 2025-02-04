@@ -1,3 +1,4 @@
+use core::panic;
 use std::path::PathBuf;
 use std::collections::HashMap;
 use std::io;
@@ -49,9 +50,11 @@ impl StorageMap {
         self.map.contains_key(key)
     }
 
-    pub fn remove(&mut self, key: &str) -> io::Result<()> {
+    pub fn remove(&mut self, key: &str) {
         self.map.remove(key);
-        self.save()
+        if let Err(e) = self.save() {
+            panic!("Could not update file. Error : {e}");
+        }
     }
 
     pub fn clear(&mut self){
@@ -76,16 +79,7 @@ impl StorageMap {
         Ok(())
     }
 
-    #[allow(dead_code)]
-    fn load(&mut self) {
-        let data = match read_from_file() {
-            Ok(content) => content,
-            Err(e) => {
-                 println!("Error loading data: {}", e); 
-                 String::new() 
-            }
-        };
-    }
+
 
     pub fn iter(&self) -> StorageMapIter {
         StorageMapIter {
@@ -127,7 +121,7 @@ mod tests {
     fn test_storage_map_remove() {
         let mut storage = StorageMap::new();
         storage.insert("1".to_string(), PathBuf::from("apple"));
-        storage.remove("1").unwrap();
+        storage.remove("1");
         assert!(storage.get("1").is_none());
     }
 
@@ -136,7 +130,7 @@ mod tests {
         let mut storage = StorageMap::new();
         storage.insert("1".to_string(), PathBuf::from("apple"));
         storage.insert("2".to_string(), PathBuf::from("banana"));
-        let mut iter = storage.iter();
+        let iter = storage.iter();
         let items: Vec<_> = iter.collect();
         assert_eq!(items.len(), 2);
         assert!(items.contains(&(&"1".to_string(), &PathBuf::from("apple"))));

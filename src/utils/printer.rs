@@ -50,3 +50,5 @@ pub fn print_square_with_header(header: Vec<&str>,messages: Vec<&str>) {
     println!("{}", border_vertical);
     
 }
+
+

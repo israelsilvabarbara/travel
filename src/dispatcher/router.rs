@@ -15,7 +15,7 @@ pub fn route_request(request: Request, storage: &mut StorageMap) {
         Request::Add { id, path }             => add_command::execute(storage, id, path),
         Request::Clear { force }              => clear_command::execute(storage, force),
         Request::Delete { id }                => delete_command::execute(storage, id),
-        Request::Find { pinpoint, key, auto } => find_command::execute(storage, pinpoint, key, auto),
+        Request::Find { pinpoint, key } => find_command::execute(storage, pinpoint, key),
         Request::List                         => list_command::execute(storage),
         Request::To { path }                  => to_command::execute(storage, path),
     }
